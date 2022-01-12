@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>LoopHeroJs</title>
+    <link rel="stylesheet" href="Style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="module" src="./Controller.js"></script>
+    <script>
+      var autoSizeText;
+
+      autoSizeText = function () {
+        var el, elements, _i, _len, _results;
+        elements = $(".card-name");
+        console.log(elements);
+        if (elements.length < 0) {
+          return;
+        }
+        _results = [];
+        for (_i = 0, _len = elements.length; _i < _len; _i++) {
+          el = elements[_i];
+          _results.push(
+            (function (el) {
+              var resizeText, _results1;
+              resizeText = function () {
+                var elNewFontSize;
+                elNewFontSize =
+                  parseInt($(el).css("font-size").slice(0, -2)) - 1 + "px";
+                return $(el).css("font-size", elNewFontSize);
+              };
+              _results1 = [];
+              while (el.scrollHeight > el.offsetHeight) {
+                _results1.push(resizeText());
+              }
+              return _results1;
+            })(el)
+          );
+        }
+        return _results;
+      };
+
+      $(document).ready(function () {
+        return autoSizeText();
+      });
+    </script>
+    <script>
+      $(document).ready(function () {
+        $(".card, .equipment").bind({
+          mousedown: function (e) {
+            if (e.which == 1) {
+              $(document.body).css({ "user-select": "none" });
+
+              var dragged = $(e.target).closest(".card, .equipment"),
+                orignalOffset = dragged.offset();
+
+              dragged.css({
+                left: e.pageX,
+                top: e.pageY,
+              });
+
+              dragged.css({
+                "pointer-events": "none",
+              });
+
+              var upHandler = function (e) {
+                console.log("Dropped on target: ", e.target);
+                dragged.removeClass("absolute");
+                dragged.css({
+                  "pointer-events": "all",
+                });
+                dragged.offset({
+                  top: orignalOffset.top,
+                  left: orignalOffset.left,
+                });
+                $(document.body).css({ "user-select": "initial" });
+                $("body").off("mouseup", upHandler);
+                $("body").off("mousemove", moveHandler);
+              };
+
+              var moveHandler = function (e) {
+                dragged.addClass("absolute");
+
+                dragged.offset({
+                  left: e.pageX,
+                  top: e.pageY,
+                });
+              };
+
+              $("body").bind({
+                mouseup: upHandler,
+                mousemove: moveHandler,
+              });
+            }
+          },
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="hero"></div>
+    <div class="cnt-header">
+      <div class="cnt-header-stats cnt-header-box">stats</div>
+      <div class="cnt-header-time cnt-header-box">time</div>
+      <div class="cnt-header-mode cnt-header-box">mode</div>
+      <div class="cnt-header-actions cnt-header-box">actions</div>
+    </div>
+    <div class="cnt-table">
+      <div class="cnt-cards">
+        <div class="card" data-card="swamp">
+          <div class="card-model">
+            <div class="card-model-circle"></div>
+          </div>
+          <div class="card-image"></div>
+          <div class="card-name-cnt">
+            <div class="card-name-cnt-content">
+              <span class="card-name">Swamp</span>
+            </div>
+          </div>
+          <div class="card-line"></div>
+        </div>
+
+        <div class="card" data-card="groove">
+          <div class="card-model">
+            <div class="card-model-circle card-model-circle-full"></div>
+            <div class="card-model-circle card-model-circle-half"></div>
+            <div class="card-model-circle"></div>
+          </div>
+          <div class="card-image"></div>
+          <div class="card-name-cnt">
+            <div class="card-name-cnt-content">
+              <span class="card-name">Groove</span>
+            </div>
+          </div>
+          <div class="card-line"></div>
+        </div>
+
+        <div class="card" data-card="spider_cocoon">
+          <div class="card-model">
+            <div class="card-model-circle card-model-circle-half"></div>
+          </div>
+          <div class="card-image"></div>
+          <div class="card-name-cnt">
+            <div class="card-name-cnt-content">
+              <span class="card-name">Spider Cocoon</span>
+            </div>
+          </div>
+          <div class="card-line"></div>
+        </div>
+
+        <div class="card" data-card="mountain">
+          <div class="card-model">
+            <div class="card-model-circle card-model-circle-full"></div>
+          </div>
+          <div class="card-image"></div>
+          <div class="card-name-cnt">
+            <div class="card-name-cnt-content">
+              <span class="card-name">Mountain</span>
+            </div>
+          </div>
+          <div class="card-line"></div>
+        </div>
+
+        <div class="card" data-card="">
+          <div class="card-model">
+            <div class="card-model-circle card-model-circle-full"></div>
+          </div>
+          <div class="card-image"></div>
+          <div class="card-name-cnt">
+            <div class="card-name-cnt-content">
+              <span class="card-name"
+                >teste teste teste teste teste teste teste
+              </span>
+            </div>
+          </div>
+          <div class="card-line"></div>
+        </div>
+      </div>
+    </div>
+    <div class="cnt-sidebar">
+      <div class="cnt-sidebar-actions">
+        <div class="cnt-sidebar-text">
+          <center>LOOP</center>
+          <center>~</center>
+          <center>Enemy Level</center>
+        </div>
+        <div class="cnt-sidebar-counter" data-value="0">0</div>
+        <button class="btn-config">
+          <div
+            class="pixelart-config"
+            style="margin-top: -18px; margin-left: -3px"
+          ></div>
+        </button>
+      </div>
+      <div class="cnt-sidebar-items cnt-sidebar-box">
+        <div class="cnt-item-tile">1</div>
+        <div class="cnt-item-tile">2</div>
+        <div class="cnt-item-tile">3</div>
+        <div class="cnt-item-tile">4</div>
+        <div class="cnt-item-tile">5</div>
+        <div class="cnt-item-tile">6</div>
+        <div class="cnt-item-tile">7</div>
+        <div class="cnt-item-tile">8</div>
+        <div class="cnt-item-tile">9</div>
+        <div class="cnt-item-tile">10</div>
+        <div class="cnt-item-tile">11</div>
+        <div class="cnt-item-tile">12</div>
+      </div>
+
+      <div class="cnt-sidebar-stats">
+        <div class="cnt-sidebar-stats-container">
+          <div class="life-stat-progressbar">
+            <div class="life-stat"></div>
+          </div>
+          <div class="pixelart-heart"></div>
+        </div>
+        <div class="cnt-sidebar-stats-container">
+          <div class="exp-stat-progressbar">
+            <div class="exp-stat"></div>
+          </div>
+          <div class="pixelart-exp" style="margin-top: -5px"></div>
+        </div>
+      </div>
+      <div class="cnt-sidebar-inventory cnt-sidebar-box">
+        <div class="cnt-item-tile">
+          <div class="equipment"></div>
+        </div>
+        <div class="cnt-item-tile">2</div>
+        <div class="cnt-item-tile">3</div>
+        <div class="cnt-item-tile">4</div>
+        <div class="cnt-item-tile">5</div>
+        <div class="cnt-item-tile">6</div>
+        <div class="cnt-item-tile">7</div>
+        <div class="cnt-item-tile">8</div>
+        <div class="cnt-item-tile">9</div>
+        <div class="cnt-item-tile">10</div>
+        <div class="cnt-item-tile">11</div>
+        <div class="cnt-item-tile">12</div>
+      </div>
+      <div class="cnt-sidebar-summary cnt-sidebar-box">
+        <div class="cnt-sidebar-summary-title">Summary</div>
+        <div style="height: 45px">
+          <div class="pixelart-divisor"></div>
+        </div>
+        <div class="cnt-sidebar-summary-text">Text</div>
+      </div>
+    </div>
+
+    <!-- <div class="fight-modal">
+      <div class="fight-modal-board">
+        <div class="fight-modal-board-image"></div>
+        <div class="hero-fight-screen idle attack2"></div>
+        <div class="mob-slime mob-fight-screen mob-slime-fight-screen mob-walking-left mob-fight-position-1"></div>
+        <div class="mob-slime mob-fight-screen mob-slime-fight-screen mob-walking-left mob-fight-position-2"></div>
+        <div class="mob-slime mob-fight-screen mob-slime-fight-screen mob-walking-left mob-fight-position-3"></div>
+        <div class="mob-slime mob-fight-screen mob-slime-fight-screen mob-walking-left mob-fight-position-4"></div>
+        <div class="mob-slime mob-fight-screen mob-slime-fight-screen mob-walking-left mob-fight-position-5"></div>
+      </div>
+    </div> -->
+    <div class="effect-lines"></div>
+    <div class="effect-glow"></div>
+    <div class="effect-crt"></div>
+  </body>
+</html>

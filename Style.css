@@ -1,0 +1,356 @@
+@import "./Style/Tiles.css";
+@import "./Style/Cards.css";
+@import "./Style/Hero.css";
+@import "./Style/PixelArt.css";
+@import "./Style/Mobs.css";
+@import "./Style/Equipment.css";
+@import "./Style/Modal.css";
+@import url(https://fonts.googleapis.com/css?family=VT323);
+
+html {
+    animation: crt-page-color-glitch 5s infinite;
+    transition-duration: .2s;
+    cursor: url('./Assets/cursor/mouse.cur'), auto;
+}
+
+html:before {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    content: "";
+    box-shadow: 0px 0px 295px black inset;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: .2;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    display: grid;
+    grid-template: 'header sidebar'
+        'table sidebar';
+    grid-template-columns: 1fr 17.19em;
+    grid-template-rows: 5em 1fr;
+    font-family: fantasy;
+    font-family: 'VT323';
+    height: 100vh;
+    width: 100vw;
+}
+
+button:hover{
+    cursor: url('./Assets/cursor/pointer.png'), auto;
+}
+
+.cnt-header {
+    grid-area: header;
+    background-color: black;
+    /* background-color: #898989;
+    border-bottom: solid 3px #616161; */
+
+    display: grid;
+    grid-template: 'stats time mode actions';
+    grid-template-columns: 16em 8em 16em auto;
+}
+
+.cnt-header-box {
+    background-color: #898989;
+    border: solid 3px #3e3e3e;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    box-shadow: inset 2px 0px 1px 1px #7a7a7a;
+    border-right: 2px solid #3e3e3e;
+    border-left: 1px solid #000000;
+}
+
+.cnt-header-stats {
+    grid-area: stats;
+    border-radius: 0 0 10px 0px;
+}
+
+.cnt-header-time {
+    grid-area: time;
+}
+
+.cnt-header-mode {
+    grid-area: mode;
+}
+
+.cnt-header-actions {
+    grid-area: actions;
+    border-radius: 0 0 0px 10px;
+}
+
+.cnt-sidebar {
+    grid-area: sidebar;
+    background-color: #898989;
+    border-left: solid 3px #616161;
+    display: grid;
+    grid-template: 'actions'
+        'items'
+        'stats'
+        'inventory'
+        'summary';
+    grid-template-rows: 4.81em 12em 3em 12em auto;
+
+}
+
+.cnt-sidebar-actions {
+    grid-area: actions;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    align-content: stretch;
+    align-items: center;
+    margin: 0 1em;
+}
+
+.cnt-sidebar-text {
+    align-self: center;
+}
+
+.cnt-sidebar-counter {
+    background-color: black;
+    color: white;
+    padding: 10px;
+    height: fit-content;
+    align-self: center;
+    margin: 0 2px;
+    border-radius: 25%;
+    width: 1.5em;
+    text-align: center;
+}
+
+.cnt-sidebar-box {
+    margin: 4px 10px;
+    box-shadow: inset 3px 2px 1px 1px #7a7a7a;
+    border: solid 2px #616161;
+    background: #979797;
+}
+
+.cnt-sidebar-items {
+    grid-area: items;
+    margin-top: 0px !important;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.cnt-sidebar-stats {
+    grid-area: stats;
+    margin: 0 10px;
+}
+
+.cnt-sidebar-stats-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.life-stat-progressbar {
+    background-color: #809f5d;
+    width: 92%;
+    height: 1em;
+    margin-top: 5px;
+    margin-bottom: 2px;
+    border: solid 2px #616161;
+    border-bottom: none;
+    border-right: none;
+}
+
+.life-stat {
+    background-color: #8bc34a;
+    width: 92%;
+    height: 1em;
+    border-right: solid 1px #708d50;
+}
+
+
+.exp-stat-progressbar {
+    background-color: #b9a17d;
+    width: 92%;
+    height: 1em;
+    border: solid 2px #616161;
+    border-bottom: none;
+    border-right: none;
+}
+
+.exp-stat {
+    background-color: #e9b971;
+    width: 92%;
+    height: 1em;
+    border-right: solid 1px #b19469;
+}
+
+.cnt-sidebar-inventory {
+    grid-area: inventory;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 0;
+}
+
+.cnt-sidebar-summary {
+    grid-area: summary;
+    margin: 4px 10px 0;
+    border-bottom: none;
+    border-radius: 8% 8% 0 0;
+    background: #602217;
+    box-shadow: inset 1px 1px 1px 1px #000000, inset 4px 3px 1px 1px #3c1710;
+}
+
+.cnt-table {
+    color: white;
+    grid-area: table;
+    background-color: black;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    background-color: #000000;
+    background-image: url("https://www.transparenttextures.com/patterns/random-grey-variations.png");
+    /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
+    -webkit-user-select: none;
+    /* Safari */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* IE10+/Edge */
+    user-select: none;
+    /* Standard */
+    flex-direction: row;
+}
+
+.cnt-item-tile {
+    height: 3.75em;
+    width: 3.75em;
+    border: solid 1px #c0c0c057;
+}
+
+.btn-config {
+    height: 3em;
+    width: 4em;
+}
+
+button {
+    border-radius: 15px;
+    background-color: silver;
+}
+
+.cnt-sidebar-summary-title {
+    color: silver;
+    text-align: center;
+    margin-top: .5em;
+    font-size: 1.2em;
+}
+
+.cnt-sidebar-summary-text {
+    color: silver;
+    padding-left: .5em;
+}
+
+.effect-lines {
+    background: linear-gradient(to bottom,
+            rgba(255, 255, 255, 0),
+            rgba(255, 255, 255, 0) 50%,
+            rgba(0, 0, 0, 0.2) 70%,
+            rgba(0, 0, 0, 0.6));
+    background-size: 100% 0.3rem;
+    border-radius: 2rem;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: .2;
+    animation: crt-lines 60s infinite;
+    pointer-events: none;
+    transition-duration: 0.2s;
+    z-index: 9999;
+}
+
+@keyframes crt-lines {
+    0% {
+        background-size: 100% 0.3rem;
+    }
+
+    50% {
+        background-size: 100% 0.5rem;
+    }
+
+    100% {
+        background-size: 100% 0.4rem;
+    }
+}
+
+.effect-glow {
+    animation: crt-glow 60s infinite;
+    background:
+        radial-gradient(ellipse at center,
+            rgb(75, 75, 75) 0%,
+            rgba(0, 0, 0, 0.88) 58%,
+            rgba(0, 0, 0, 0.57) 80%,
+            rgba(0, 0, 0, 0.27) 93%,
+            rgba(10, 23, 12, 0) 100%);
+    /* //filter: blur(10rem) opacity(0.1); */
+    opacity: 0.1;
+    pointer-events: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+
+@keyframes crt-glow {
+    0% {
+        opacity: 0.1;
+    }
+
+    50% {
+        opacity: 0.15;
+    }
+}
+
+
+
+.effect-crt {
+    background-image: url(https://forums.libretro.com/uploads/default/original/2X/d/da48f37fbc0040d01f0c422ec1ab894cb313662c.png);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    opacity: 0.3;
+    height: 100vh;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    background-size: 100% 100%;
+    z-index: 9999;
+}
+
+
+
+.effect-blink {
+    animation: crt-blink 0.1s;
+}
+
+@keyframes crt-blink {
+    50% {
+        filter: brightness(10);
+    }
+}
+
+
+
+@keyframes crt-page-color-glitch {
+    25% {
+    }
+
+    50% {
+        filter: sepia(.3);
+    }
+
+    75% {
+        filter: none;
+    }
+
+}
