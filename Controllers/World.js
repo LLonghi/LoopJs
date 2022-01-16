@@ -1,6 +1,10 @@
 import { Elements } from "./Elements.js";
 import { Hero } from "./Hero.js";
 import { Configs } from "./Configs.js";
+import MountainCard from "./Cards/MountainCard.js";
+import GrooveCard from "./Cards/GrooveCard.js";
+import SpiderCocoonCard from "./Cards/spiderCocoonCard.js";
+import SwampCard from "./Cards/SwampCard.js";
 
 const elements = Elements();
 const hero = Hero();
@@ -10,6 +14,8 @@ var tiles = [];
 var tileRoad = [];
 var currentCoordinates = null;
 var campfireCoordinates = null;
+
+var cards = [];
 
 function defineTileAsRoad(coordinates, curve) {
   var tile = tiles[coordinates.row][coordinates.col];
@@ -221,6 +227,7 @@ export function World() {
 
       return tiles;
     },
+
     createLoop: function () {
       var _generatedPath = controllers.PathCreator.generate();
 
@@ -253,50 +260,20 @@ export function World() {
           );
         }, 20 * index);
       }
-
-      //Caminho criado a mao enquanto o script de route nao esta feito
-      //       defineTileAsRoad(firstTileCoordinates, "tile-curve-ld");
-      //       defineTileAsRoad({ row: 4, col: 3 }, "tile-vertical");
-      //       defineTileAsRoad({ row: 5, col: 3 }, "tile-curve-dr");
-      //       defineTileAsRoad({ row: 5, col: 4 }, "tile-horizontal");
-      //       defineTileAsRoad({ row: 5, col: 5 }, "tile-curve-rd");
-      //       defineTileAsRoad({ row: 6, col: 5 }, "tile-curve-dr");
-      //       defineTileAsRoad({ row: 6, col: 6 }, "tile-horizontal");
-      //       defineTileAsRoad({ row: 6, col: 7 }, "tile-curve-rd");
-      //       defineTileAsRoad({ row: 7, col: 7 }, "tile-vertical");
-      //       defineTileAsRoad({ row: 8, col: 7 }, "tile-curve-dr");
-      //       defineTileAsRoad({ row: 8, col: 8 }, "tile-horizontal");
-      //       defineTileAsRoad({ row: 8, col: 9 }, "tile-horizontal");
-      //       defineTileAsRoad({ row: 8, col: 10 }, "tile-curve-ru");
-      //       defineTileAsRoad({ row: 7, col: 10 }, "tile-vertical");
-      //       defineTileAsRoad({ row: 6, col: 10 }, "tile-curve-ur");
-      //       defineTileAsRoad({ row: 6, col: 11 }, "tile-curve-ru");
-      //       defineTileAsRoad({ row: 5, col: 11 }, "tile-curve-ur");
-      //       defineTileAsRoad({ row: 5, col: 12 }, "tile-horizontal");
-      //       defineTileAsRoad({ row: 5, col: 13 }, "tile-curve-ru");
-      //       defineTileAsRoad({ row: 4, col: 13 }, "tile-vertical");
-      //       defineTileAsRoad({ row: 3, col: 13 }, "tile-vertical");
-      //       defineTileAsRoad({ row: 2, col: 13 }, "tile-curve-ul");
-      //       defineTileAsRoad({ row: 2, col: 12 }, "tile-horizontal");
-      //       defineTileAsRoad({ row: 2, col: 11 }, "tile-curve-ld");
-      //       defineTileAsRoad({ row: 3, col: 11 }, "tile-curve-dl");
-      //       defineTileAsRoad({ row: 3, col: 10 }, "tile-horizontal");
-      //       defineTileAsRoad({ row: 3, col: 9 }, "tile-horizontal");
-      //       defineTileAsRoad({ row: 3, col: 8 }, "tile-horizontal");
-      //       defineTileAsRoad({ row: 3, col: 7 }, "tile-horizontal");
-      //       defineTileAsRoad({ row: 3, col: 6 }, "tile-horizontal");
-      //       defineTileAsRoad({ row: 3, col: 5 }, "tile-horizontal");
-      //       defineTileAsRoad({ row: 3, col: 4 }, "tile-horizontal");
     },
+
     spawnHero: function () {
       hero.move(campfireCoordinates, true);
     },
+
     getRoadTiles: function () {
       return tiles.flatMap((tile) => tile).filter((x) => x.road);
     },
+
     getTiles: function () {
       return tiles.flatMap((tile) => tile);
     },
+
     play: function () {
       controllers.World.createTiles();
 
@@ -304,6 +281,16 @@ export function World() {
 
       setTimeout(() => {
         controllers.World.spawnHero();
+
+
+        cards.push(new MountainCard());
+        cards.push(new GrooveCard());
+        cards.push(new SpiderCocoonCard());
+        cards.push(new SwampCard());
+
+        cards.forEach(_card =>{
+          _card.drawnCard();
+        })
 
           spawnMobs();
 

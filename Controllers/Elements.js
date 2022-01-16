@@ -9,6 +9,7 @@ export function Elements() {
       loop: $('.cnt-sidebar-counter')
     },
     table: $('.cnt-table'),
-    hero: $('.hero')
+    cardBox: $('.cnt-cards'),
+    hero: $('.hero'),
   };
 }
