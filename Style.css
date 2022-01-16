@@ -166,7 +166,18 @@ button:hover{
     border: solid 2px #616161;
     border-bottom: none;
     border-right: none;
+    position: relative;
+    overflow: hidden;
 }
+
+.stat-counter {
+    position: absolute;
+    -webkit-box-align: center;
+    left: 50%;
+    font-size: 17px;
+    top: 0px;
+}
+
 
 .life-stat {
     background-color: #8bc34a;
@@ -183,6 +194,8 @@ button:hover{
     border: solid 2px #616161;
     border-bottom: none;
     border-right: none;
+    position: relative;
+    overflow: hidden;
 }
 
 .exp-stat {

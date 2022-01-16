@@ -71,6 +71,7 @@ function checkForFight(callback) {
   if (_currentTileObj.mobs.length) {
     _currentTileObj.mobs.forEach(function (mob) {
       mob.kill();
+      hero.addExp(15);
     });
   }
   callback();

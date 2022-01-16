@@ -1,8 +1,8 @@
 export function Elements() {
   return {
     stats: {
-      life: $(""),
-      exp: $(""),
+      life: $(".life-stat-progressbar"),
+      exp: $(".exp-stat-progressbar"),
       day: $(""),
       boss: $(""),
       round: $(""),

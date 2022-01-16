@@ -4,15 +4,33 @@ import { Configs } from "../Configs.js";
 const elements = Elements();
 const configs = Configs();
 
+function updateLifeCounter(life, maxLife) {
+  var progressEl = elements.stats.life,
+    bar = progressEl.find(".life-stat"),
+    text = progressEl.find(".stat-counter");
+
+  bar.width(`${(life / maxLife) * 100}%`);
+  text.html(`${life}/${maxLife}`);
+}
+
+function updateExpCounter(exp, maxExp) {
+  var progressEl = elements.stats.exp,
+    bar = progressEl.find(".exp-stat"),
+    text = progressEl.find(".stat-counter");
+
+  bar.width(`${(exp / maxExp) * 100}%`);
+  text.html(`${exp}/${maxExp}`);
+}
 export default class Hero {
   constructor() {
     var me = this;
 
     me.el = null;
+    me.level = 1;
     me.exp = 0;
     me.expNextLevel = 100;
-    me.life = 32;
     me.lifePoints = 32;
+    me.lifeMaxPoints = 32;
     me.coordinates = {
       row: -1,
       col: -1,
@@ -25,6 +43,43 @@ export default class Hero {
     me.el = $('<div class="hero"></div>');
 
     $("body").append(me.el);
+
+    updateLifeCounter(me.lifePoints, me.lifeMaxPoints);
+    updateExpCounter(me.exp, me.expNextLevel);
+  }
+
+  setLifePoints(points) {
+    var me = this;
+
+    me.lifePoints += points;
+    updateLifeCounter(me.lifePoints, me.lifeMaxPoints);
+  }
+
+  setLifeMaxPoints(points) {
+    var me = this;
+
+    me.lifeMaxPoints += points;
+    updateLifeCounter(me.lifePoints, me.lifeMaxPoints);
+  }
+
+  addExp(points) {
+    var me = this;
+
+    me.exp += points;
+
+    if (me.exp > me.expNextLevel) me.levelUp();
+    else updateExpCounter(me.exp, me.expNextLevel);
+  }
+
+  levelUp() {
+    var me = this;
+
+    me.level++;
+    console.log(`Level up! (${me.level})`);
+
+    me.exp -= me.expNextLevel;
+    me.expNextLevel *= configs.lvlUpExpMultiplier;
+    updateExpCounter(me.exp, me.expNextLevel);
   }
 
   move(coordinates, noAnimation) {
