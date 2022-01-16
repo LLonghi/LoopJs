@@ -11,6 +11,10 @@ html {
     animation: crt-page-color-glitch 5s infinite;
     transition-duration: .2s;
     cursor: url('./Assets/cursor/mouse.cur'), auto;
+    
+    width: 1920px;
+    height: 979px;    
+    /* transform: scale(0.9) translate3d(-5.6%,-5.6%, 0px); */
 }
 
 html:before {
@@ -87,13 +91,18 @@ button:hover{
     background-color: #898989;
     border-left: solid 3px #616161;
     display: grid;
-    grid-template: 'actions'
+    grid-template:
+        'actions'
         'items'
         'stats'
         'inventory'
         'summary';
     grid-template-rows: 4.81em 12em 3em 12em auto;
-
+    position: absolute;
+    TOP: 0;
+    right: 0;
+    width: 17.19em;
+    height: 100%;
 }
 
 .cnt-sidebar-actions {
@@ -220,6 +229,8 @@ button:hover{
     user-select: none;
     /* Standard */
     flex-direction: row;
+    width: 1644.97px;
+    height: 899px;
 }
 
 .cnt-item-tile {
