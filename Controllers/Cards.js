@@ -1,7 +1,7 @@
-import SwampCard  from"./Cards/SwampCard";
-import GrooveCard  from"./Cards/GrooveCard";
-import SpiderCocoonCard  from"./Cards/spiderCocoonCard";
-import MountainCard  from"./Cards/MountainCard";
+import SwampCard  from"./Cards/SwampCard.js";
+import GrooveCard  from"./Cards/GrooveCard.js";
+import SpiderCocoonCard  from"./Cards/spiderCocoonCard.js";
+import MountainCard  from"./Cards/MountainCard.js";
 
 export function Cards() {
   return {

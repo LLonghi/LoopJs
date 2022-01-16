@@ -1,15 +1,13 @@
 import { Elements } from "./Elements.js";
 import { Hero } from "./Hero.js";
 import { Configs } from "./Configs.js";
-import MountainCard from "./Cards/MountainCard.js";
-import GrooveCard from "./Cards/GrooveCard.js";
-import SpiderCocoonCard from "./Cards/spiderCocoonCard.js";
-import SwampCard from "./Cards/SwampCard.js";
+import { Cards } from "./Cards.js";
 import Tile from "./Tiles/Tile.js";
 
 const elements = Elements();
 const hero = Hero();
 const configs = Configs();
+const cards = Cards();
 
 var tiles = [];
 var tileRoad = [];
@@ -17,7 +15,6 @@ var currentCoordinates = null;
 var campfireCoordinates = null;
 
 var cardsHand = [];
-
 
 function move() {
   let coordinates = nextTileCoordinates();
@@ -123,7 +120,7 @@ export function World() {
               : _generatedPath[index + 1];
 
         setTimeout(() => {
-          let _tile =tiles[_coord.l][_coord.c];
+          let _tile = tiles[_coord.l][_coord.c];
           tileRoad.push(_tile.el.attr("data-coordinate"));
 
           _tile.defineTileAsRoad(
@@ -155,10 +152,10 @@ export function World() {
       setTimeout(() => {
         controllers.World.spawnHero();
 
-        cardsHand.push(new MountainCard());
-        cardsHand.push(new GrooveCard());
-        cardsHand.push(new SpiderCocoonCard());
-        cardsHand.push(new SwampCard());
+        cardsHand.push(new cards.MountainCard());
+        cardsHand.push(new cards.GrooveCard());
+        cardsHand.push(new cards.SpiderCocoonCard());
+        cardsHand.push(new cards.SwampCard());
 
         cardsHand.forEach((_card) => {
           _card.drawCard();
