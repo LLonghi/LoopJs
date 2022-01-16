@@ -22,5 +22,6 @@ window.controllers = controllers;
 controllers.World.play();
 
 setTimeout(() => {
-  new Audio('/Assets/theme.mp3').play()  
+  new Audio('/Assets/sound/theme.mp3').play()  
 }, 1000);
+
