@@ -76,7 +76,6 @@ function checkForFight(callback) {
   if (_currentTileObj.mobs.length) {
     _currentTileObj.mobs.forEach(function (mob) {
       mob.kill();
-      hero.addExp(15);
     });
   }
   callback();
@@ -159,12 +158,12 @@ export function World() {
       setTimeout(() => {
         controllers.World.spawnHero();
 
-        cardsHand.push(new cards.MountainCard());
-        cardsHand.push(new cards.GrooveCard());
-        cardsHand.push(new cards.SpiderCocoonCard());
-        cardsHand.push(new cards.SwampCard());
+        window.globalEnv.cardHand.push(new cards.MountainCard());
+        window.globalEnv.cardHand.push(new cards.GrooveCard());
+        window.globalEnv.cardHand.push(new cards.SpiderCocoonCard());
+        window.globalEnv.cardHand.push(new cards.SwampCard());
 
-        cardsHand.forEach((_card) => {
+        window.globalEnv.cardHand.forEach((_card) => {
           _card.drawCard();
         });
 

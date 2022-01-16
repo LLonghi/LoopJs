@@ -46,6 +46,8 @@ export default class Hero {
 
     updateLifeCounter(me.lifePoints, me.lifeMaxPoints);
     updateExpCounter(me.exp, me.expNextLevel);
+
+    window.globalEnv.hero = me;
   }
 
   setLifePoints(points) {
@@ -78,7 +80,8 @@ export default class Hero {
     console.log(`Level up! (${me.level})`);
 
     me.exp -= me.expNextLevel;
-    me.expNextLevel *= configs.lvlUpExpMultiplier;
+    me.expNextLevel = Math.ceil(me.expNextLevel * configs.lvlUpExpMultiplier);
+
     updateExpCounter(me.exp, me.expNextLevel);
   }
 

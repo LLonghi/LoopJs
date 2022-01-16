@@ -1,3 +1,11 @@
+import { Elements } from "../Elements.js";
+import { Configs } from "../Configs.js";
+import { Cards } from "../Cards.js";
+
+var elements = Elements();
+const configs = Configs();
+const cards = Cards();
+
 function randomIntFromInterval(min, max) {
   // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -23,13 +31,13 @@ function walk(mob) {
       y = position.left + newPosition[1] - mob.el.width() / 2;
 
     if (y < position.left) y = position.left;
-    
+
     if (mob.el.position().left < y) {
-      mob.el.addClass('mob-walking-right')
-      mob.el.removeClass('mob-walking-left')
-    } else if (mob.el.position().left > y)  {
-      mob.el.addClass('mob-walking-left')
-      mob.el.removeClass('mob-walking-right')
+      mob.el.addClass("mob-walking-right");
+      mob.el.removeClass("mob-walking-left");
+    } else if (mob.el.position().left > y) {
+      mob.el.addClass("mob-walking-left");
+      mob.el.removeClass("mob-walking-right");
     }
 
     mob.el.animate(
@@ -58,6 +66,9 @@ export default class Mob {
     me.movements = [];
     me.currentMovement = 0;
     me.walk = false;
+    me.expDrop = 0;
+    me.cardDropChance = 0;
+    me.itemDropChance = 0;
   }
 
   spawn() {
@@ -79,12 +90,43 @@ export default class Mob {
   kill() {
     var me = this;
 
-    me.el.addClass('mob-dead');
+    me.drop();
+
+    me.el.addClass("mob-dead");
     me.tile.mobs.splice(me.tile.mobs.indexOf(me), 1);
     me.el.fadeOut(200, function () {
       me.el.remove();
     });
     me.dead = true;
-    console.log('todo: monster drop')
+  }
+
+  drop() {
+    var me = this,
+      _cardDropChance = Math.round(Math.random() * 100),
+      _itemDropChance = Math.round(Math.random() * 100);
+
+    window.globalEnv.hero.addExp(me.expDrop);
+
+    if (me.cardDropChance > _cardDropChance) {
+      console.log(`drop card (${me.cardDropChance}/${_cardDropChance})`);
+      console.log("Todo: drop card");
+
+      let cardDrops = [new cards.MountainCard(),
+        new cards.GrooveCard(),
+        new cards.SpiderCocoonCard(),
+        new cards.SwampCard()]
+
+        const rndInt = Math.floor(Math.random() * 4) 
+
+        var card = cardDrops[rndInt];
+        window.globalEnv.cardHand.push(card);
+
+        card.drawCard();
+    }
+
+    if (me.itemDropChance > _itemDropChance) {
+      console.log(`drop item (${me.itemDropChance}/${_itemDropChance})`);
+      console.log("Todo: drop item");
+    }
   }
 }

@@ -6,10 +6,10 @@ export function Elements() {
       day: $(""),
       boss: $(""),
       round: $(""),
-      loop: $('.cnt-sidebar-counter')
+      loop: $(".cnt-sidebar-counter"),
     },
-    table: $('.cnt-table'),
-    cardBox: $('.cnt-cards'),
-    hero: $('.hero'),
+    table: $(".cnt-table"),
+    cardBox: $(".cnt-cards"),
+    hero: null,
   };
 }
