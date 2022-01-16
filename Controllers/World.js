@@ -1,11 +1,11 @@
 import { Elements } from "./Elements.js";
-import { Hero } from "./Hero.js";
+import Hero from "./Hero/Hero.js";
 import { Configs } from "./Configs.js";
 import { Cards } from "./Cards.js";
 import Tile from "./Tiles/Tile.js";
 
 const elements = Elements();
-const hero = Hero();
+const hero = new Hero();
 const configs = Configs();
 const cards = Cards();
 
@@ -133,6 +133,7 @@ export function World() {
     },
 
     spawnHero: function () {
+      hero.drawHero();
       hero.move(campfireCoordinates, true);
     },
 
@@ -170,5 +171,3 @@ export function World() {
     },
   };
 }
-
-//Labeler commit teste 2
