@@ -40,10 +40,15 @@ function nextTileCoordinates() {
 
   if (nextTile > tileRoad.length - 1) {
     nextTile = 0;
-    newLoop = true;
   }
 
   var coord = tileRoad[nextTile].split("-");
+
+  if (
+    campfireCoordinates.row == coord[0] &&
+    campfireCoordinates.col == coord[1]
+  )
+    newLoop = true;
 
   return { row: coord[0], col: coord[1], newLoop: newLoop };
 }
