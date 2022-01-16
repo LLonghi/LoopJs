@@ -32,7 +32,7 @@ export default class Card {
     );
   }
 
-  drawnCard() {
+  drawCard() {
     var me = this;
 
     controllers.Elements.cardBox.append(me.cardEl);

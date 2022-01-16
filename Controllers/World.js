@@ -5,6 +5,7 @@ import MountainCard from "./Cards/MountainCard.js";
 import GrooveCard from "./Cards/GrooveCard.js";
 import SpiderCocoonCard from "./Cards/spiderCocoonCard.js";
 import SwampCard from "./Cards/SwampCard.js";
+import Tile from "./Tiles/Tile.js";
 
 const elements = Elements();
 const hero = Hero();
@@ -15,38 +16,8 @@ var tileRoad = [];
 var currentCoordinates = null;
 var campfireCoordinates = null;
 
-var cards = [];
+var cardsHand = [];
 
-function defineTileAsRoad(coordinates, curve) {
-  var tile = tiles[coordinates.row][coordinates.col];
-  tile.road = true;
-  tile.el.addClass("tile-road");
-  tile.el.addClass(curve);
-
-  tileRoad.push(tile.el.attr("data-coordinate"));
-}
-
-function defineCampfire(coordinates) {
-  campfireCoordinates = { col: coordinates.col, row: coordinates.row };
-  var tile = tiles[coordinates.row][coordinates.col];
-  tile.campFire = true;
-  tile.canSpawn = false;
-  tile.mobLimit = 0;
-  tile.el.addClass("tile-campfire");
-
-  tile.el.append(`<div class="pixelart-campfire "></div>`);
-}
-
-function drawTiles() {
-  tiles.forEach(function (row) {
-    row.forEach(function (tile) {
-      tile.el = $(
-        `<div class="table-tile" data-coordinate="${tile.row}-${tile.col}"><span class="tile-coordinates">${tile.row} - ${tile.col}</span></div>`
-      );
-      elements.table.append(tile.el);
-    });
-  });
-}
 
 function move() {
   let coordinates = nextTileCoordinates();
@@ -112,120 +83,20 @@ function startDay() {
   console.log("Todo");
 }
 
-function defineTileLayout(_lastCoord, _curentCoord, _nextCoord) {
-  if (!_lastCoord || !_curentCoord || !_nextCoord) return "";
-
-  //Ok
-  //direita baixo
-  if (
-    _curentCoord.row == _lastCoord.row &&
-    _curentCoord.row < _nextCoord.row &&
-    _curentCoord.col > _lastCoord.col &&
-    _curentCoord.col == _nextCoord.col
-  )
-    return "tile-curve-rd";
-
-  //Ok
-  //direita cima
-  if (
-    _curentCoord.row == _lastCoord.row &&
-    _curentCoord.row > _nextCoord.row &&
-    _curentCoord.col > _lastCoord.col &&
-    _curentCoord.col == _nextCoord.col
-  )
-    return "tile-curve-ru";
-
-  //Ok
-  //esquerda baixo
-  if (
-    _curentCoord.row == _lastCoord.row &&
-    _curentCoord.row < _nextCoord.row &&
-    _curentCoord.col < _lastCoord.col &&
-    _curentCoord.col == _nextCoord.col
-  )
-    return "tile-curve-ld";
-
-  //Ok
-  //esquerda cima
-  if (
-    _curentCoord.row == _lastCoord.row &&
-    _curentCoord.row > _nextCoord.row &&
-    _curentCoord.col < _lastCoord.col &&
-    _curentCoord.col == _nextCoord.col
-  )
-    return "tile-curve-lu";
-
-  //Ok
-  // baixo esquerda
-  if (
-    _curentCoord.row > _lastCoord.row &&
-    _curentCoord.row == _nextCoord.row &&
-    _curentCoord.col == _lastCoord.col &&
-    _curentCoord.col > _nextCoord.col
-  )
-    return "tile-curve-dl";
-
-  //Ok
-  // baixo direita
-  if (
-    _curentCoord.row > _lastCoord.row &&
-    _curentCoord.row == _nextCoord.row &&
-    _curentCoord.col == _lastCoord.col &&
-    _curentCoord.col < _nextCoord.col
-  )
-    return "tile-curve-dr";
-
-  //ok
-  //cima esquerda
-  if (
-    _curentCoord.row < _lastCoord.row &&
-    _curentCoord.row == _nextCoord.row &&
-    _curentCoord.col == _lastCoord.col &&
-    _curentCoord.col > _nextCoord.col
-  )
-    return "tile-curve-ul";
-
-  //ok
-  //cima direita
-  if (
-    _curentCoord.row < _lastCoord.row &&
-    _curentCoord.row == _nextCoord.row &&
-    _curentCoord.col == _lastCoord.col &&
-    _curentCoord.col < _nextCoord.col
-  )
-    return "tile-curve-ur";
-
-  //horizontal
-  if (_curentCoord.row == _nextCoord.row && _curentCoord.row == _lastCoord.row)
-    return "tile-horizontal";
-
-  //vertical
-  if (_curentCoord.col == _nextCoord.col && _curentCoord.col == _lastCoord.col)
-    return "tile-vertical";
-
-  return "";
-}
-
 export function World() {
   return {
-    createTiles: function () {
-      for (let row = 0; row < 10; row++) {
+    createTiles: function (rows, columns) {
+      rows = 10;
+      columns = 20;
+      for (let row = 0; row < rows; row++) {
         tiles[row] = [];
-        for (let col = 0; col < 20; col++) {
-          tiles[row][col] = {
-            row: row,
-            col: col,
-            road: false,
-            mobLimit: 5,
-            canSpawn: true,
-            mobs: [],
-          };
+        for (let col = 0; col < columns; col++) {
+          let _tile = new Tile(row, col);
+          tiles[row][col] = _tile;
+
+          _tile.drawTile();
         }
       }
-
-      drawTiles(tiles);
-
-      return tiles;
     },
 
     createLoop: function () {
@@ -236,7 +107,9 @@ export function World() {
       var _camp =
         _generatedPath[Math.floor(Math.random() * _generatedPath.length)];
 
-      defineCampfire({ row: _camp.l, col: _camp.c });
+      tiles[_camp.l][_camp.c].defineCampfire();
+
+      campfireCoordinates = { col: _camp.c, row: _camp.l };
 
       for (let index = 0; index < _generatedPath.length; index++) {
         let _coord = _generatedPath[index],
@@ -250,13 +123,13 @@ export function World() {
               : _generatedPath[index + 1];
 
         setTimeout(() => {
-          defineTileAsRoad(
+          let _tile =tiles[_coord.l][_coord.c];
+          tileRoad.push(_tile.el.attr("data-coordinate"));
+
+          _tile.defineTileAsRoad(
+            { row: ultimo.l, col: ultimo.c },
             { row: _coord.l, col: _coord.c },
-            defineTileLayout(
-              { row: ultimo.l, col: ultimo.c },
-              { row: _coord.l, col: _coord.c },
-              { row: proximo.l, col: proximo.c }
-            )
+            { row: proximo.l, col: proximo.c }
           );
         }, 20 * index);
       }
@@ -282,21 +155,20 @@ export function World() {
       setTimeout(() => {
         controllers.World.spawnHero();
 
+        cardsHand.push(new MountainCard());
+        cardsHand.push(new GrooveCard());
+        cardsHand.push(new SpiderCocoonCard());
+        cardsHand.push(new SwampCard());
 
-        cards.push(new MountainCard());
-        cards.push(new GrooveCard());
-        cards.push(new SpiderCocoonCard());
-        cards.push(new SwampCard());
+        cardsHand.forEach((_card) => {
+          _card.drawCard();
+        });
 
-        cards.forEach(_card =>{
-          _card.drawnCard();
-        })
+        spawnMobs();
 
-          spawnMobs();
+        startDay();
 
-          startDay();
-    
-          move();
+        move();
       }, 600);
     },
   };
