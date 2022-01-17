@@ -29,5 +29,12 @@ setTimeout(() => {
   window.themeSong = new Audio("/Assets/sound/theme.mp3");
   window.themeSong.loop = true;
   window.themeSong.volume = controllers.Configs.themeVolume;
+  window.themeSong.muted = true;
+  window.themeSong.autoplay = true;
   window.themeSong.play();
 }, 1300);
+
+document.body.addEventListener("mousemove", function () {
+  if (window.themeSong) window.themeSong.muted = false;
+  //
+});
