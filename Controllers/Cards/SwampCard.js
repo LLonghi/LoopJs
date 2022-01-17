@@ -6,5 +6,6 @@ export default class SwampCard extends Card {
     var me = this;
     
     me.cardType = 1;
+    me.tileCss = 'tile-swamp';
   }
 }

@@ -173,6 +173,21 @@
 }
 
 
+
+.tile-swamp {
+    background-image: url('../Assets/tiles/SwampTile.png') !important;
+    background-size: 100% 110% !important;
+    background: transparent;
+}
+
+.tile-rock {
+    animation: tile-append-animate 0.5s linear;
+    background-image: url('../Assets/tiles/Rock.png') !important;
+    background-size: 100% 110% !important;
+    background-position: center;
+}
+
+
 @keyframes tile-append-animate {
     from {
         opacity: 0;

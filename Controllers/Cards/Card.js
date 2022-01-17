@@ -41,16 +41,21 @@ export default class Card {
     me.cardEl = null;
     me.cardName = cardName;
     me.cardClass = cardClass;
-    me.tile = null;
-    me.placementRules = [];
+    
     // 1 - road
     // 2 - roadside
     // 3 - landscape
     // 4 - special
     me.cardType = 0;
     me.goldenCard = false;
+    me.placementRules = [];
+    
     me.overrideTransformedTiles = false;
     me.transformTile = true;
+
+    me.tileCss = "";
+    me.tileObject = null;
+    me.tileFn = null;
   }
 
   createCard() {
@@ -122,7 +127,15 @@ export default class Card {
 
     if (me.transformTile) tile.tileTransformed = true;
 
-    tile.el.append(`<div style="color: wheat;">${me.cardName}</div>`);
+    if (me.tileCss) tile.el.addClass(me.tileCss);
+
+    if (me.tileObject)
+      tile.el.append(`<div style="color: wheat;">${me.tileObject}</div>`);
+
+    if (me.tileFn) me.tileFn();
+
+    if (!me.tileCss && !me.tileObject && !me.tileCss)
+      tile.el.append(`<div style="color: wheat;">${me.cardName}</div>`);
 
     var sfx = new Audio("/Assets/sound/card_place.mp3");
     sfx.volume = configs.sfxVolume;
