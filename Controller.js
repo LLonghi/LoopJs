@@ -4,6 +4,7 @@ import { Elements } from "./Controllers/Elements.js";
 import { Configs } from "./Controllers/Configs.js";
 import { Mobs } from "./Controllers/Mobs.js";
 import { PathCreator } from "./Controllers/PathCreator.js";
+import CardHand from "./Controllers/Cards/CardHand.js";
 
 const controllers = {
   World: World(),
@@ -19,11 +20,14 @@ window.controllers = controllers;
 window.globalEnv = {
   hero: null,
   tiles: null,
-  cardHand: []
+  cardHand: new CardHand(),
 };
 
 controllers.World.play();
 
-// setTimeout(() => {
-//   new Audio('/Assets/sound/theme.mp3').play()
-// }, 1000);
+setTimeout(() => {
+  window.themeSong = new Audio("/Assets/sound/theme.mp3");
+  window.themeSong.loop = true;
+  window.themeSong.volume = controllers.Configs.themeVolume;
+  window.themeSong.play();
+}, 1300);

@@ -12,6 +12,8 @@ export default class Tile {
     me.mobLimit = 0;
     me.canSpawn = false;
     me.campFire = false;
+    me.sideRoad = false;
+    me.tileTransformed = false;
   }
 
   drawTile() {
@@ -36,6 +38,7 @@ export default class Tile {
     var me = this;
 
     me.road = true;
+    me.sideRoad = false;
     me.canSpawn = true;
     me.mobLimit = 5;
     me.addClass("tile-road");

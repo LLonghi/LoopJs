@@ -79,6 +79,10 @@ export default class Hero {
     me.level++;
     console.log(`Level up! (${me.level})`);
 
+    var sfx = new Audio('/Assets/sound/level_up.wav')
+    sfx.volume = configs.sfxVolume;
+    sfx.play();
+
     me.exp -= me.expNextLevel;
     me.expNextLevel = Math.ceil(me.expNextLevel * configs.lvlUpExpMultiplier);
 

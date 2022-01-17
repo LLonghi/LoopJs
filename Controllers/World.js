@@ -14,7 +14,26 @@ var tileRoad = [];
 var currentCoordinates = null;
 var campfireCoordinates = null;
 
-var cardsHand = [];
+function defineSideRoadTiles() {
+  let _tiles = controllers.World.getTiles().filter((t) => !t.road);
+  _tiles.forEach((tile) => {
+    let tileU = tile.row - 1 > -1 ? tiles[tile.row - 1][tile.col] : null,
+      tileD =
+        tile.row + 1 < tiles.length ? tiles[tile.row + 1][tile.col] : null,
+      tileL = tile.col - 1 > -1 ? tiles[tile.row][tile.col - 1] : null,
+      tileR =
+        tile.col + 1 < tiles[0].length ? tiles[tile.row][tile.col + 1] : null;
+
+    if (
+      (tileU && tileU.road) ||
+      (tileD && tileD.road) ||
+      (tileL && tileL.road) ||
+      (tileR && tileR.road)
+    ) {
+      if (!tile.road) tile.sideRoad = true;
+    }
+  });
+}
 
 function move() {
   let coordinates = nextTileCoordinates();
@@ -142,6 +161,16 @@ export function World() {
       hero.move(campfireCoordinates, true);
     },
 
+    getSideRoadTiles: function () {
+      return tiles.flatMap((tile) => tile).filter((x) => x.sideRoad);
+    },
+
+    getLandscapeTiles: function () {
+      return tiles
+        .flatMap((tile) => tile)
+        .filter((x) => !x.sideRoad && !x.road);
+    },
+
     getRoadTiles: function () {
       return tiles.flatMap((tile) => tile).filter((x) => x.road);
     },
@@ -150,22 +179,23 @@ export function World() {
       return tiles.flatMap((tile) => tile);
     },
 
+    getTile: function (_r, _c) {
+      return tiles
+        .flatMap((tile) => tile)
+        .filter((t) => t.col == _c && t.row == _r)[0];
+    },
+
     play: function () {
       controllers.World.createTiles();
 
       controllers.World.createLoop();
 
       setTimeout(() => {
+        defineSideRoadTiles();
+
         controllers.World.spawnHero();
 
-        window.globalEnv.cardHand.push(new cards.MountainCard());
-        window.globalEnv.cardHand.push(new cards.GrooveCard());
-        window.globalEnv.cardHand.push(new cards.SpiderCocoonCard());
-        window.globalEnv.cardHand.push(new cards.SwampCard());
-
-        window.globalEnv.cardHand.forEach((_card) => {
-          _card.drawCard();
-        });
+        window.globalEnv.cardHand.addGoldenCard();
 
         spawnMobs();
 

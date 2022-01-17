@@ -107,22 +107,8 @@ export default class Mob {
 
     window.globalEnv.hero.addExp(me.expDrop);
 
-    if (me.cardDropChance > _cardDropChance) {
-      console.log(`drop card (${me.cardDropChance}/${_cardDropChance})`);
-      console.log("Todo: drop card");
-
-      let cardDrops = [cards.MountainCard,
-        cards.GrooveCard,
-        cards.SpiderCocoonCard,
-        cards.SwampCard]
-
-        const rndInt = Math.floor(Math.random() * 4) 
-
-        var card = new cardDrops[rndInt];
-        window.globalEnv.cardHand.push(card);
-
-        card.drawCard();
-    }
+    if (me.cardDropChance > _cardDropChance) 
+      window.globalEnv.cardHand.addCard();
 
     if (me.itemDropChance > _itemDropChance) {
       console.log(`drop item (${me.itemDropChance}/${_itemDropChance})`);

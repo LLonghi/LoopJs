@@ -13,6 +13,8 @@
     align-content: space-around;
     justify-content: flex-start;
     align-items: flex-end;
+    background-color: transparent;
+    width: calc(100% - 17.19em);
 }
 
 .card {
@@ -28,7 +30,7 @@
     z-index: 100;
     transition-duration: 0.5s;
     border-style: groove;
-    /* border-bottom: none; */
+    /* transition: transform 1s 0s; */
 }
 
 .card:hover {
@@ -200,24 +202,48 @@
     background: #468d49;
 }
 
+.card-golden {
+    border-color: #ffc107;
+}
+
+.card-golden .card-model {
+    box-shadow: 1px 2px #ffc107 inset
+}
+
+.card-golden .card-model::before,
+.card-golden .card-model::after {
+    border-color: #ffc107;
+}
+
+.card-hidden {
+    opacity: 0;
+}
 
 .card-model-circle-half {
-    background: linear-gradient(90deg, #4caf50 50%, black 50%);
+    background: linear-gradient(90deg, #468d49 50%, black 50%);
 }
 
 
-.card[data-card='groove'] .card-image{    
-    background-image: url('../Assets/cards/Grove.png');    
+.card[data-card='groove'] .card-image {
+    background-image: url('../Assets/cards/Grove.png');
 }
 
-.card[data-card='mountain'] .card-image{    
-    background-image: url('../Assets/cards/Mountain.png');    
+.card[data-card='mountain'] .card-image {
+    background-image: url('../Assets/cards/Mountain.png');
 }
 
-.card[data-card='spider_cocoon'] .card-image{    
-    background-image: url('../Assets/cards/Spider_Cocoon.png');    
+.card[data-card='spider_cocoon'] .card-image {
+    background-image: url('../Assets/cards/Spider_Cocoon.png');
 }
 
-.card[data-card='swamp'] .card-image{    
-    background-image: url('../Assets/cards/Swamp.png');    
+.card[data-card='swamp'] .card-image {
+    background-image: url('../Assets/cards/Swamp.png');
+}
+
+.card[data-card='oblivion'] .card-image {
+    background-image: url('../Assets/cards/Oblivion.png');
+}
+
+.card[data-card='arsenal'] .card-image {
+    background-image: url('../Assets/cards/Arsenal.png');
 }

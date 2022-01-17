@@ -9,6 +9,7 @@ export default class Slime extends Mob {
     me.tile = tile;    
     me.expDrop = 15;
     me.cardDropChance = 50;
+    me.cardDropChance = 100;
     me.itemDropChance = 50;
   }
 }
