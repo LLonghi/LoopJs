@@ -111,14 +111,14 @@ export default class Mob {
       console.log(`drop card (${me.cardDropChance}/${_cardDropChance})`);
       console.log("Todo: drop card");
 
-      let cardDrops = [new cards.MountainCard(),
-        new cards.GrooveCard(),
-        new cards.SpiderCocoonCard(),
-        new cards.SwampCard()]
+      let cardDrops = [cards.MountainCard,
+        cards.GrooveCard,
+        cards.SpiderCocoonCard,
+        cards.SwampCard]
 
         const rndInt = Math.floor(Math.random() * 4) 
 
-        var card = cardDrops[rndInt];
+        var card = new cardDrops[rndInt];
         window.globalEnv.cardHand.push(card);
 
         card.drawCard();
