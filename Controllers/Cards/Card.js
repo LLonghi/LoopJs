@@ -48,8 +48,8 @@ export default class Card {
     // 4 - special
     me.cardType = 0;
     me.goldenCard = false;
-    me.placementRules = [];
-    
+
+    me.placementRules = [];    
     me.overrideTransformedTiles = false;
     me.transformTile = true;
 
