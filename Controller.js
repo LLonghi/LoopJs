@@ -5,6 +5,7 @@ import { Configs } from "./Controllers/Configs.js";
 import { Mobs } from "./Controllers/Mobs.js";
 import { PathCreator } from "./Controllers/PathCreator.js";
 import CardHand from "./Controllers/Cards/CardHand.js";
+import Inventory from "./Controllers/Items/Inventory.js";
 
 const controllers = {
   World: World(),
@@ -21,6 +22,7 @@ window.globalEnv = {
   hero: null,
   tiles: null,
   cardHand: new CardHand(),
+  inventory: new Inventory()
 };
 
 controllers.World.play();

@@ -107,12 +107,11 @@ export default class Mob {
 
     window.globalEnv.hero.addExp(me.expDrop);
 
-    if (me.cardDropChance > _cardDropChance) 
+    if (me.cardDropChance > _cardDropChance)
       window.globalEnv.cardHand.addCard();
 
-    if (me.itemDropChance > _itemDropChance) {
-      console.log(`drop item (${me.itemDropChance}/${_itemDropChance})`);
-      console.log("Todo: drop item");
-    }
+    if (me.itemDropChance > _itemDropChance)
+      window.globalEnv.inventory.addItem();
+      window.globalEnv.inventory.addItem();
   }
 }

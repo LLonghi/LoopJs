@@ -1,6 +1,16 @@
-.equipment{
+.equipment {
     cursor: url('../Assets/cursor/pointerYellow.cur'), auto;
-    background-image: url('../Assets/equipment/Armor1.png');
+    background-size: contain;
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 70% 70%;
+    z-index: 99;
+    transition-duration: 0.5s;
+}
+
+.equipment-default {
     background-size: contain;
     width: 100%;
     height: 100%;
@@ -14,4 +24,97 @@
 .equipment:active {
     transition-duration: unset;
     cursor: url('../Assets/cursor/pointerYellow.png'), auto;
+}
+
+.equipment-default {
+    filter: opacity(0.5) invert(25%) sepia(60%) saturate(269%) hue-rotate(346deg);
+}
+
+.equipment-default.amulet {
+    background-image: url('../Assets/equipment/Amulet1.png');
+}
+
+.equipment-default.armor {
+    background-image: url('../Assets/equipment/Armor1.png');
+}
+
+.equipment-default.belt {
+    background-image: url('../Assets/equipment/Belt1.png');
+}
+
+.equipment-default.boots {
+    background-image: url('../Assets/equipment/Boots1.png');
+}
+
+.equipment-default.gloves {
+    background-image: url('../Assets/equipment/Gloves1.png');
+}
+
+.equipment-default.grimoire {
+    background-image: url('../Assets/equipment/Grimoire1.png');
+}
+
+.equipment-default.helmet {
+    background-image: url('../Assets/equipment/Helmet1.png');
+}
+
+.equipment-default.ring {
+    background-image: url('../Assets/equipment/Ring1.png');
+}
+
+.equipment-default.shield {
+    background-image: url('../Assets/equipment/Shield1.png');
+}
+
+.equipment-default.sword {
+    background-image: url('../Assets/equipment/Sword1.png');
+}
+
+.equipment-default.potion {
+    background-image: url('../Assets/equipment/Potion1.png');
+}
+
+
+.equipment.item-amulet {
+    background-image: url('../Assets/equipment/Amulet1.png');
+}
+
+.equipment.item-armor {
+    background-image: url('../Assets/equipment/Armor1.png');
+}
+
+.equipment.item-belt {
+    background-image: url('../Assets/equipment/Belt1.png');
+}
+
+.equipment.item-boots {
+    background-image: url('../Assets/equipment/Boots1.png');
+}
+
+.equipment.item-gloves {
+    background-image: url('../Assets/equipment/Gloves1.png');
+}
+
+.equipment.item-grimoire {
+    background-image: url('../Assets/equipment/Grimoire1.png');
+}
+
+.equipment.item-helmet {
+    background-image: url('../Assets/equipment/Helmet1.png');
+}
+
+.equipment.item-ring {
+    background-image: url('../Assets/equipment/Ring1.png');
+}
+
+.equipment.item-shield {
+    background-image: url('../Assets/equipment/Shield1.png');
+}
+
+.equipment.item-sword {
+    background-image: url('../Assets/equipment/Sword1.png');
+}
+
+.equipment.item-potion {
+    background-image: url('../Assets/equipment/Potion1.png');
 }

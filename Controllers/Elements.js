@@ -10,6 +10,7 @@ export function Elements() {
     },
     table: $(".cnt-table"),
     cardBox: $(".cnt-cards"),
+    inventory: $(".cnt-sidebar-inventory .cnt-item-tile"),
     hero: null,
   };
 }

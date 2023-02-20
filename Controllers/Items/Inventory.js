@@ -1,44 +1,89 @@
-import { Cards } from "../Cards.js";
+import ItemType from "./ItemType.js";
+import { Configs } from "../Configs.js";
 
-const cards = Cards();
+const configs = Configs();
+
+function shuffleItems(items) {
+  items.forEach((item) => {
+    let parent = item.itemEl.parent(),
+      currentSlot = parent.attr("data-inventory-slot");
+
+    if (currentSlot > "1") {
+      item.itemEl.appendTo(parent.prev());
+    }
+  });
+}
 
 export default class Inventory {
   constructor() {
     var me = this;
 
     me.items = [];
-
+    me.equipped = {
+      amulet: null,
+      armor: null,
+      belt: null,
+      boots: null,
+      gloves: null,
+      grimoire: null,
+      ring1: null,
+      ring2: null,
+      shield: null,
+      sword: null,
+      potion: null,
+    };
   }
 
   addItem() {
-    // var me = this,
-    //   rndCardIndex = Math.floor(Math.random() * me.cardDrops.length),
-    //   _card = new me.cardDrops[rndCardIndex]();
+    var me = this,
+      rndItemIndex = Math.floor(Math.random() * Object.keys(ItemType).length),
+      _itemClass = ItemType[Object.keys(ItemType)[rndItemIndex]].class,
+      _item = new _itemClass();
 
-    // me.cards.push(_card);
+    _item.createItem();
 
-    // _card.drawCard();
+    if (me.items.length > 11) {
+      let itemToRemove = me.items[0];
+      me.discardItem(itemToRemove);
+    }
 
-    // if (me.cards.length > 10) {
-    //   let cardToRemove = me.cards[0];
+    me.items.push(_item);
 
-    //   me.cards.splice(0, 1);
+    $(controllers.Elements.inventory[me.items.length - 1]).append(_item.itemEl);
 
-    //   cardToRemove.discard();
-    // }
+    var sfx = new Audio("/Assets/sound/card_new.wav");
+    sfx.volume = configs.sfxVolume;
+    sfx.play();
   }
 
-  removeItem(card) {
-    // var me = this,
-    //   index = me.cards.indexOf(card);
+  discardItem(item) {
+    var me = this;
 
-    // me.cards.splice(index, 1);
+    item.discard();
+
+    shuffleItems(me.items);
+
+    me.items.splice(0, 1);
   }
 
-  discardItem(card) {
-    // var me = this,
-    //   index = me.cards.indexOf(card);
+  equipItem(slot, itemId) {
+    var me = this,
+      item = me.items.find((i) => i.id == itemId);
 
-    // me.cards.splice(index, 1);
+    if (item) {
+      item.itemEl.appendTo(slot);
+
+      shuffleItems(me.items);
+
+      me.items.splice(me.items.findIndex((i) => i.id == itemId), 1);
+
+      slot.childNodes[0].hidden = true
+      
+      var sfx = new Audio("/Assets/sound/card_place.mp3");
+      sfx.volume = configs.sfxVolume;
+      sfx.play();
+    } else {
+      console.log("Erro ao soltar item");
+    }
   }
 }

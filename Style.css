@@ -1,5 +1,6 @@
 @import "./Style/Tiles.css";
 @import "./Style/Cards.css";
+@import "./Style/Items.css";
 @import "./Style/Hero.css";
 @import "./Style/PixelArt.css";
 @import "./Style/Mobs.css";
@@ -176,6 +177,14 @@ button:hover{
     left: 50%;
     font-size: 17px;
     top: 0px;
+}
+
+.potion-counter {
+    position: relative;
+    font-size: 17px;
+    color: white;
+    top: -22px;
+    text-align: right;
 }
 
 

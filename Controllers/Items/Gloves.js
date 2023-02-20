@@ -3,12 +3,11 @@ import { Configs } from "../Configs.js";
 import ItemType from "./ItemType.js"
 const configs = Configs();
 
-
-export default class Armor extends Item {
+export default class Gloves extends Item {
   constructor() {
-    super('Armor','item-armor', ItemType.armor.type);
+    super('Gloves','item-gloves', ItemType.gloves.type);
     var me = this;
 
   }
- 
+
 }
