@@ -31,6 +31,10 @@ function cardType(type) {
 
 function shuffleDeck() {}
 
+function executePlacementRules(card){
+  if(card.placementRules.length) card.placementRules.forEach(fn => fn(card));
+};
+
 export default class Card {
   constructor(cardName, cardClass) {
     var me = this;
@@ -56,6 +60,7 @@ export default class Card {
     me.tileCss = "";
     me.tileObject = null;
     me.tileFn = null;
+    me.tilePlaced = null;
   }
 
   createCard() {
@@ -134,8 +139,11 @@ export default class Card {
 
     if (me.tileFn) me.tileFn();
 
+    //temporario para ver oq foi inserido
     if (!me.tileCss && !me.tileObject && !me.tileCss)
       tile.el.append(`<div style="color: wheat;">${me.cardName}</div>`);
+
+    me.tilePlaced = tile;    
 
     var sfx = new Audio("/Assets/sound/card_place.mp3");
     sfx.volume = configs.sfxVolume;
@@ -152,11 +160,15 @@ export default class Card {
         me.cardEl.remove();
       }, 251);
     }, 401);
+
+    executePlacementRules(me);    
   }
 
   discard() {
-    var me = this;
+    const me = this;
 
+    console.log('removing this card', me)
+    
     window.globalEnv.cardHand.removeCard(me);
 
     var sfx = new Audio("/Assets/sound/card_burn.mp3");
@@ -182,6 +194,7 @@ export default class Card {
 
       setTimeout(() => {
         me.cardEl.remove();
+        console.log(me.cardEl)
       }, 251);
     }, 401);
   }
