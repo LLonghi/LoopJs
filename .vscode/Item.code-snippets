@@ -1,0 +1,31 @@
+{
+	// Place your LoopJs workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
+	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
+	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
+	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
+	// Placeholders with the same ids are connected.
+	// Example:
+	"New item": {
+		"scope": "javascript,typescript",
+		"prefix": "New Item",
+		"body": [
+			"import Item from \"./Item.js\";",
+			"import { Configs } from \"../Configs.js\";",
+			"import ItemType from \"./ItemType\"",
+			"const configs = Configs();",
+			"",
+			"export default class ${1} extends Item {",
+			"  constructor() {",
+			"    super('${1}','item-${2}', ItemType.${3});",
+			"    var me = this;",
+			"",
+			"  }",
+		  	"",
+			"}",
+		],
+		"description": "Log output to console"
+	}
+	
+
+}
