@@ -31,9 +31,6 @@ export default class CardHand {
 
     if (me.cards.length > 10) {
       let cardToRemove = me.cards[0];
-
-      me.cards.splice(0, 1);
-
       cardToRemove.discard();
     }
   }
