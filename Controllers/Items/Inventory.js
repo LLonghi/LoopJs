@@ -6,10 +6,12 @@ const configs = Configs();
 function shuffleItems(items) {
   items.forEach((item) => {
     let parent = item.itemEl.parent(),
-      currentSlot = parent.attr("data-inventory-slot");
+      currentSlot = parent.attr("data-inventory-slot"),
+      prevNode = parent.prev();
 
     if (currentSlot > "1") {
-      item.itemEl.appendTo(parent.prev());
+      if(prevNode.children().map((i,el) =>{if (!$(el).hasClass('item-hidden')) return el}).length == 0)
+      item.itemEl.appendTo(prevNode);
     }
   });
 }
@@ -75,10 +77,13 @@ export default class Inventory {
 
       shuffleItems(me.items);
 
-      me.items.splice(me.items.findIndex((i) => i.id == itemId), 1);
+      me.items.splice(
+        me.items.findIndex((i) => i.id == itemId),
+        1
+      );
 
-      slot.childNodes[0].hidden = true
-      
+      slot.childNodes[0].hidden = true;
+
       var sfx = new Audio("/Assets/sound/card_place.mp3");
       sfx.volume = configs.sfxVolume;
       sfx.play();
