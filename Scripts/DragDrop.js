@@ -1,6 +1,7 @@
 function dragDropCards(dragged) {
   let cardType = dragged.data("card-type"),
     overrideTile = dragged.data("override");
+
   switch (cardType) {
     case 1:
       highlighItems = controllers.World.getRoadTiles();
@@ -93,10 +94,7 @@ dragDropFN = {
         dragDropCards(dragged);
       }
 
-      if (dragged.hasClass("equipment")) {
-      }
-
-      dragged.css({
+      dragged.offset({
         left: e.pageX,
         top: e.pageY,
       });
@@ -106,8 +104,6 @@ dragDropFN = {
       });
 
       var upHandler = function (e) {
-        let tile = e.target.closest(".table-tile");
-
         if (dragged.hasClass("card")) {
           cardUpHandler(dragged, orignalOffset, e);
         } else if (dragged.hasClass("equipment")) {
