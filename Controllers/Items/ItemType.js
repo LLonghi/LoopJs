@@ -7,6 +7,7 @@ import Grimoire from "./Grimoire.js";
 import Ring from "./Ring.js";
 import Shield from "./Shield.js";
 import Sword from "./Sword.js";
+import Helmet from "./Helmet.js";
 
 export default {
   amulet: { type: "amulet", class: Amulet },
@@ -18,4 +19,5 @@ export default {
   ring: { type: "ring", class: Ring },
   shield: { type: "shield", class: Shield },
   sword: { type: "sword", class: Sword },
+  helmet: {type: "helmet", class: Helmet },
 };
