@@ -39,17 +39,14 @@ function move() {
   let coordinates = nextTileCoordinates();
   currentCoordinates = coordinates;
   hero.move(coordinates);
-
-  if (coordinates.newLoop) {
-    spawnMobs();
-    controllers.Stats.Loop.changeLoop();
-  }
-
-  checkForFight(() => {
-    setTimeout(() => {
-      move();
-    }, configs.walkSpeed);
-  });
+  //TODO: for better results, this should be transormed into a promisse
+  setTimeout(() => {
+    if (coordinates.newLoop) {
+      spawnMobs();
+      controllers.Stats.Loop.changeLoop();
+    }
+    checkForFight(move);
+  }, configs.walkSpeed + 10);
 }
 
 function nextTileCoordinates() {
