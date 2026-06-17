@@ -83,6 +83,9 @@ export default class Inventory {
       }
 
       item.itemEl.appendTo(slot);
+      // Remove estilos inline deixados pelo arrasto (position/top/left), senão
+      // o "position: relative" do CSS não vale e o tooltip de stats some.
+      item.itemEl.removeAttr("style").removeClass("absolute");
       me.equippedSlots.set(slot, item);
 
       shuffleItems(me.items);
