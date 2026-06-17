@@ -13,6 +13,9 @@ var tiles = [];
 var tileRoad = [];
 var currentCoordinates = null;
 var campfireCoordinates = null;
+var autoTimer = null; // timer do passo automático (permite cancelar ao pular o dia)
+var gameStarted = false;
+var skipping = false;
 
 function defineSideRoadTiles() {
   let _tiles = controllers.World.getTiles().filter((t) => !t.road);
@@ -43,13 +46,96 @@ function move() {
   const regen = hero.getAttribute("lifeRegen");
   if (regen > 0) hero.heal(regen);
   //TODO: for better results, this should be transormed into a promisse
-  setTimeout(() => {
+  autoTimer = setTimeout(() => {
+    autoTimer = null;
     if (coordinates.newLoop) {
       spawnMobs();
       controllers.Stats.Loop.changeLoop();
     }
     checkForFight(move);
   }, configs.walkSpeed + 10);
+}
+
+// Processa a chegada do herói num tile (regen, novo loop e combate),
+// reaproveitado tanto pelo passo normal quanto pela simulação do "pular o dia".
+function processArrival(coordinates) {
+  currentCoordinates = coordinates;
+
+  const regen = hero.getAttribute("lifeRegen");
+  if (regen > 0) hero.heal(regen);
+
+  if (coordinates.newLoop) {
+    spawnMobs();
+    controllers.Stats.Loop.changeLoop();
+  }
+
+  let tileObj = controllers.World.getTiles().filter(
+    (tile) => tile.row == coordinates.row && tile.col == coordinates.col
+  )[0];
+  if (tileObj && tileObj.mobs.length) resolveCombat(tileObj);
+}
+
+// Resolve, sem nenhuma animação, todos os eventos da rota a partir da posição
+// atual até a fogueira (combates, spawns, drops e o loop) e teleporta o herói.
+function simulateDay() {
+  // Conclui o passo atual cujo timer foi cancelado (spawn/loop e combate
+  // pendentes do tile onde o herói está), para não pular nenhum evento.
+  if (currentCoordinates) {
+    if (currentCoordinates.newLoop) {
+      spawnMobs();
+      controllers.Stats.Loop.changeLoop();
+    }
+    let curTile = controllers.World.getTiles().filter(
+      (tile) =>
+        tile.row == currentCoordinates.row && tile.col == currentCoordinates.col
+    )[0];
+    if (curTile && curTile.mobs.length) resolveCombat(curTile);
+  }
+
+  // Caminha pela rota só com índices (sem mover o boneco) até a fogueira.
+  let idx = tileRoad.indexOf(hero.currentCoordinate());
+  let arrivedCampfire = false;
+  let safety = 0;
+  const maxSteps = tileRoad.length + 2;
+
+  while (!arrivedCampfire && safety++ < maxSteps) {
+    idx = (idx + 1) % tileRoad.length;
+    let coord = tileRoad[idx].split("-");
+    let newLoop =
+      campfireCoordinates.row == coord[0] && campfireCoordinates.col == coord[1];
+
+    processArrival({ row: coord[0], col: coord[1], newLoop: newLoop });
+    arrivedCampfire = newLoop;
+  }
+
+  // Teleporta o herói para a fogueira (sem animação de percurso).
+  hero.el.stop(true, true);
+  hero.move(campfireCoordinates, true);
+}
+
+// "Pular o dia": escurece a tela (troca de cena), resolve o dia inteiro com o
+// herói teleportado para a fogueira e clareia a tela de volta.
+function skipDay() {
+  if (skipping || !gameStarted || !campfireCoordinates) return;
+  skipping = true;
+
+  if (autoTimer) {
+    clearTimeout(autoTimer);
+    autoTimer = null;
+  }
+
+  const overlay = $(".scene-transition");
+  const FADE = 250;
+
+  overlay.addClass("active"); // fade para preto
+  setTimeout(() => {
+    simulateDay(); // tudo acontece com a tela escura
+
+    overlay.removeClass("active"); // fade de volta ao normal
+
+    skipping = false;
+    move(); // retoma o ciclo automático a partir da fogueira
+  }, FADE);
 }
 
 function nextTileCoordinates() {
@@ -262,6 +348,10 @@ export function World() {
         .filter((t) => t.col == _c && t.row == _r)[0];
     },
 
+    skipDay: function () {
+      skipDay();
+    },
+
     play: function () {
       controllers.World.createTiles();
 
@@ -278,6 +368,7 @@ export function World() {
 
         startDay();
 
+        gameStarted = true;
         move();
       }, 600);
     },

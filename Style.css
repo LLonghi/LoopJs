@@ -78,6 +78,78 @@ button:hover{
     grid-area: time;
 }
 
+.time-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 100%;
+    font-family: 'VT323';
+}
+
+.time-skip {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    padding: 2px 6px;
+    height: 2.2em;
+    background-color: #cfcfcf;
+    border: solid 2px #3e3e3e;
+    border-radius: 6px;
+    box-shadow: inset 1px 1px 0 1px #e7e7e7;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.time-skip:hover {
+    cursor: url('./Assets/cursor/pointer.png'), auto;
+}
+
+.time-skip.active {
+    background-color: #e9b971;
+    box-shadow: inset 0 0 4px 1px #7a5a2a;
+}
+
+.time-skip-glass {
+    font-size: 1.2em;
+}
+
+.time-skip-arrows {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #3e3e3e;
+}
+
+.time-speed {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.speed-btn {
+    width: 2em;
+    height: 1.45em;
+    padding: 0;
+    border: solid 2px #3e3e3e;
+    border-radius: 8px;
+    background-color: #602217;
+    color: #d9b38c;
+    font-family: 'VT323';
+    font-size: 0.95em;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.speed-btn:hover {
+    cursor: url('./Assets/cursor/pointer.png'), auto;
+}
+
+.speed-btn.active {
+    background-color: #8bc34a;
+    color: #1c2a10;
+    box-shadow: inset 0 0 3px 1px #4f7322;
+}
+
 .cnt-header-mode {
     grid-area: mode;
 }
@@ -281,6 +353,23 @@ button {
 .cnt-sidebar-summary-text {
     color: silver;
     padding-left: .5em;
+}
+
+.scene-transition {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 100000;
+    transition: opacity 250ms ease;
+}
+
+.scene-transition.active {
+    opacity: 1;
 }
 
 .effect-lines {

@@ -4,6 +4,7 @@ import { Elements } from "./Controllers/Elements.js";
 import { Configs } from "./Controllers/Configs.js";
 import { Mobs } from "./Controllers/Mobs.js";
 import { PathCreator } from "./Controllers/PathCreator.js";
+import { TimeControls } from "./Controllers/TimeControls.js";
 import CardHand from "./Controllers/Cards/CardHand.js";
 import Inventory from "./Controllers/Items/Inventory.js";
 
@@ -14,6 +15,7 @@ const controllers = {
   Elements: Elements(),
   Mobs: Mobs(),
   PathCreator: PathCreator(),
+  TimeControls: TimeControls(),
 };
 
 window.controllers = controllers;
@@ -24,6 +26,8 @@ window.globalEnv = {
   cardHand: new CardHand(),
   inventory: new Inventory()
 };
+
+controllers.TimeControls.init();
 
 controllers.World.play();
 

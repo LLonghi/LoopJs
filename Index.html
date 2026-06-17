@@ -12,7 +12,18 @@
   <body>   
     <div class="cnt-header">
       <div class="cnt-header-stats cnt-header-box"><div class="hero-attributes"></div></div>
-      <div class="cnt-header-time cnt-header-box">time</div>
+      <div class="cnt-header-time cnt-header-box">
+        <div class="time-controls">
+          <button class="time-skip" title="Pular o dia (avança até a fogueira)">
+            <span class="time-skip-glass">&#8987;</span>
+            <span class="time-skip-arrows">&raquo;</span>
+          </button>
+          <div class="time-speed">
+            <button class="speed-btn active" data-speed="1">x1</button>
+            <button class="speed-btn" data-speed="2">x2</button>
+          </div>
+        </div>
+      </div>
       <div class="cnt-header-mode cnt-header-box">mode</div>
       <div class="cnt-header-actions cnt-header-box">actions</div>
     </div>
@@ -100,6 +111,7 @@
       </div>
     </div> -->
 
+    <div class="scene-transition"></div>
     <div class="effect-lines"></div>
     <div class="effect-glow"></div>
     <div class="effect-crt"></div>
