@@ -24,6 +24,29 @@
     animation: mob-dead-animate 0.3s linear infinite;
 }
 
+/* Variações de slime (reaproveitam o sprite base com filtros de cor) */
+.mob-slime.mob-slime-toxic {
+    filter: hue-rotate(40deg) saturate(2) brightness(1.1);
+}
+
+.mob-slime.mob-slime-frost {
+    filter: hue-rotate(150deg) saturate(1.4) brightness(1.2);
+}
+
+.mob-slime.mob-slime-magma {
+    filter: hue-rotate(-90deg) saturate(2.2) brightness(1.1);
+}
+
+.mob-slime.mob-slime-king {
+    filter: sepia(1) saturate(3) hue-rotate(-20deg) brightness(1.2)
+        drop-shadow(0 0 4px gold);
+}
+
+.mob-wolf.mob-walking-left {
+    -webkit-transform: scaleX(-1) scale(2.5);
+    transform: scaleX(-1) scale(2.5);
+}
+
 
 .mob-slime.mob-walking-left {
     -webkit-transform: scaleX(-1) scaleX(-1);

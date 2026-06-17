@@ -2,3 +2,54 @@
 .item-hidden {
     opacity: 0;
 }
+
+/* Tooltip de atributos do item (aparece ao passar o mouse) */
+.equipment {
+    position: relative;
+}
+
+.item-tooltip {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 4px;
+    min-width: 9em;
+    padding: 4px 6px;
+    background: #1a1a1a;
+    border: solid 2px #616161;
+    color: #e0e0e0;
+    font-family: 'VT323';
+    font-size: 0.95em;
+    line-height: 1.1;
+    z-index: 1000;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.equipment:hover .item-tooltip {
+    display: block;
+}
+
+.item-tooltip-title {
+    color: gold;
+    text-align: center;
+    border-bottom: solid 1px #4a4a4a;
+    margin-bottom: 3px;
+    padding-bottom: 2px;
+}
+
+.item-tooltip-line {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.item-tooltip-line span:last-child {
+    color: #8bc34a;
+}
+
+.item-tooltip-primary span {
+    color: #e9b971;
+}

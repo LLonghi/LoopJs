@@ -1,3 +1,31 @@
+/* Painel de atributos do herói (no cabeçalho) */
+.hero-attributes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0px 10px;
+    padding: 3px 8px;
+    font-family: 'VT323';
+    font-size: 0.95em;
+    color: #2b2b2b;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.hero-attr {
+    display: flex;
+    justify-content: space-between;
+    line-height: 1.05;
+}
+
+.hero-attr-value {
+    color: #111;
+    font-weight: bold;
+}
+
+.hero-attr-level .hero-attr-value {
+    color: #602217;
+}
+
 .hero{    
     width: 3.5em;
     height: 3.5em;

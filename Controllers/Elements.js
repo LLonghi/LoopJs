@@ -7,6 +7,7 @@ export function Elements() {
       boss: $(""),
       round: $(""),
       loop: $(".cnt-sidebar-counter"),
+      attributes: $(".hero-attributes"),
     },
     table: $(".cnt-table"),
     cardBox: $(".cnt-cards"),

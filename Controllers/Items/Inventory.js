@@ -1,5 +1,6 @@
 import ItemType from "./ItemType.js";
 import { Configs } from "../Configs.js";
+import { sumAttributes } from "../Attributes.js";
 
 const configs = Configs();
 
@@ -21,19 +22,21 @@ export default class Inventory {
     var me = this;
 
     me.items = [];
-    me.equipped = {
-      amulet: null,
-      armor: null,
-      belt: null,
-      boots: null,
-      gloves: null,
-      grimoire: null,
-      ring1: null,
-      ring2: null,
-      shield: null,
-      sword: null,
-      potion: null,
-    };
+    // Itens equipados, indexados pelo elemento DOM do slot (cada slot é único,
+    // o que permite ter dois anéis em slots diferentes sem conflito).
+    me.equippedSlots = new Map();
+  }
+
+  // Soma os modificadores de todos os itens equipados e aplica no herói.
+  recomputeHeroAttributes() {
+    var me = this;
+    const list = [];
+    me.equippedSlots.forEach((item) => {
+      if (item && item.getAttributes()) list.push(item.getAttributes());
+    });
+
+    const total = sumAttributes(list);
+    if (window.globalEnv.hero) window.globalEnv.hero.applyEquipment(total);
   }
 
   addItem() {
@@ -73,7 +76,14 @@ export default class Inventory {
       item = me.items.find((i) => i.id == itemId);
 
     if (item) {
+      // Se já houver um item neste slot, ele é substituído (descartado).
+      const previous = me.equippedSlots.get(slot);
+      if (previous && previous !== item) {
+        previous.itemEl.remove();
+      }
+
       item.itemEl.appendTo(slot);
+      me.equippedSlots.set(slot, item);
 
       shuffleItems(me.items);
 
@@ -82,7 +92,10 @@ export default class Inventory {
         1
       );
 
-      slot.childNodes[0].hidden = true;
+      const defaultEl = slot.querySelector(".equipment-default");
+      if (defaultEl) defaultEl.hidden = true;
+
+      me.recomputeHeroAttributes();
 
       var sfx = new Audio("/Assets/sound/card_place.mp3");
       sfx.volume = configs.sfxVolume;

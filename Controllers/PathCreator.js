@@ -1,178 +1,169 @@
-var tilePath = [
-  [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1,-1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
-  [-1, 0, -2, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1],
-  [-1, 0, -1, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1],
-  [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1],
-  [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1],
-  [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1],
-  [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1],
-  [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1],
-  [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1],
-  [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1,-1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
+// Gera um loop de estrada aleatório como um "ciclo induzido" na grade:
+// - o caminho volta ao ponto de partida (loop fechado);
+// - nenhuma rua encosta em outra rua, exceto as células consecutivas do caminho;
+// - mantém uma margem livre entre a rua e as bordas da grade.
+// Usa backtracking (DFS) em vez de reiniciar do zero a cada beco sem saída,
+// o que torna a geração performática e confiável.
+
+const ROWS = 10;
+const COLS = 20;
+const MARGIN = 1; // tiles livres garantidos entre a rua e a borda da grade
+const MIN_LEN = 20; // tamanho mínimo do loop (mesma regra do gerador antigo)
+const MAX_LEN = 70; // teto para evitar loops gigantes que tomam a grade toda
+const MAX_ATTEMPTS = 200; // reinícios com novo ponto inicial
+const STEP_BUDGET = 4000; // teto de passos por tentativa (evita backtracking exponencial)
+
+const RMIN = MARGIN;
+const RMAX = ROWS - 1 - MARGIN;
+const CMIN = MARGIN;
+const CMAX = COLS - 1 - MARGIN;
+
+const DIRS = [
+  [-1, 0],
+  [1, 0],
+  [0, -1],
+  [0, 1],
 ];
-var matrixPath = [];
-var tentativas = 0;
-var rodada = 0;
-var campfire = {
-  l: 1,
-  c: 1,
-};
 
-function log(arr) {
-  console.log("");
-  arr.forEach((c, i) => {
-    var _ = i + " |";
-    c.forEach((v) => {
-      _ += " " + (v >= 0 ? ` ${v}` : v);
-    });
-    console.log(_);
-  });
+function key(l, c) {
+  return l + "-" + c;
 }
 
-function checkTile(path) {
-  if (path.l < 0 || path.c < 0 || path.l > 19 || path.c > 19) return false;
-  return tilePath[path.l][path.c] == 0; // || ( rodada > 1 && path.l == campfire.l && path.c == campfire.c)
+function inArea(l, c) {
+  return l >= RMIN && l <= RMAX && c >= CMIN && c <= CMAX;
 }
 
-function checkCampfire(path) {
-  if (path.l < 0 || path.c < 0 || path.l > 19 || path.c > 19) return false;
-  return rodada > 1 && path.l == campfire.l && path.c == campfire.c; //
+function isAdjacent(a, b) {
+  return Math.abs(a.l - b.l) + Math.abs(a.c - b.c) === 1;
 }
-//provavelmente terei que utilizar recursividade pra ir voltando o caminho quando der merda e tentar a outra possibilidade, até que no fim ele se conecte
-function createPath(path, lastPath) {
-  var possiblePath = [];
-  var success = false;
 
-
-  if (!lastPath) {
-    tilePath = [
-      [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1,-1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
-      [-1, 0, -2, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1],
-      [-1, 0, -1, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1],
-      [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1],
-      [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1],
-      [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1],
-      [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1],
-      [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1],
-      [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1],
-      [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1,-1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
-    ];
-    matrixPath = [];
-    rodada = 0;
-    console.log("tentativa: " + tentativas);
-    tentativas++;
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const tmp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = tmp;
   }
+  return arr;
+}
 
-  tilePath[path.l][path.c] = 1;
-
-  matrixPath.push(path);
-
-  //gambiarra
-  if (rodada == 2) {
-    tilePath[1][2] = 0;
-    tilePath[1][3] = 0;
-    tilePath[2][3] = 0;
+// Conta quantas células vizinhas (4-direções) já fazem parte do caminho.
+function roadNeighborCount(l, c, road) {
+  let count = 0;
+  for (let i = 0; i < DIRS.length; i++) {
+    if (road.has(key(l + DIRS[i][0], c + DIRS[i][1]))) count++;
   }
+  return count;
+}
 
-  var tileCheck = {
-    l: path.l - 1,
-    c: path.c
+function tryBuildLoop() {
+  const start = {
+    l: RMIN + Math.floor(Math.random() * (RMAX - RMIN + 1)),
+    c: CMIN + Math.floor(Math.random() * (CMAX - CMIN + 1)),
   };
-  if (checkTile(tileCheck)) possiblePath.push(tileCheck);
-  success = success ? success : checkCampfire(tileCheck);
 
-  tileCheck = {
-    l: path.l + 1,
-    c: path.c,
-  };
-  if (checkTile(tileCheck)) possiblePath.push(tileCheck);
-  success = success ? success : checkCampfire(tileCheck);
+  const path = [start];
+  const road = new Set([key(start.l, start.c)]);
+  let steps = 0;
 
-  tileCheck = {
-    l: path.l,
-    c: path.c - 1,
-  };
-  if (checkTile(tileCheck)) possiblePath.push(tileCheck);
-  success = success ? success : checkCampfire(tileCheck);
+  function extend() {
+    if (++steps > STEP_BUDGET) return null; // aborta tentativa cara; generate() reinicia
+    const current = path[path.length - 1];
+    const len = path.length;
 
-  tileCheck = {
-    l: path.l,
-    c: path.c + 1,
-  };
-  if (checkTile(tileCheck)) possiblePath.push(tileCheck);
-  success = success ? success : checkCampfire(tileCheck);
+    if (len > MAX_LEN) return null;
 
-  if (success) {
-    console.log("success!");
-    return matrixPath.length>= 20? matrixPath: createPath(campfire);
-  }
-  //verificar de alguma forma se o prox é o campfire
-  var campfireIndex = possiblePath.indexOf(campfire);
-  var selected =
-    campfireIndex > -1
-      ? possiblePath[campfireIndex]
-      : possiblePath[Math.floor(Math.random() * possiblePath.length)];
+    // Probabilidade de fechar cresce conforme o loop fica mais longo,
+    // gerando loops de tamanhos variados em vez de sempre o mínimo.
+    const closeProb =
+      len >= MIN_LEN ? (len - MIN_LEN) / (MAX_LEN - MIN_LEN) : 0;
 
-  if (selected) {
-    if (JSON.stringify(path) != JSON.stringify(campfire))
-      possiblePath
-        .filter((x) => x != selected)
-        .forEach((bpath) => {
-          tilePath[bpath.l][bpath.c] = -1;
-        });
+    const extensions = [];
+    let closingCell = null;
 
-    //talvez resolva se verificar se o selected ainda possui uma ligação com o inicio dps de bloqueado os caminhos
-    //possa resolver pela possibilidade de voltar atras
+    for (let i = 0; i < DIRS.length; i++) {
+      const nl = current.l + DIRS[i][0];
+      const nc = current.c + DIRS[i][1];
 
-    if (
-      lastPath &&
-      matrixPath.length > 1 &&
-      JSON.stringify(path) == JSON.stringify(campfire)
-    ) {
-      console.log("sucesso");
-      return matrixPath.length>= 20? matrixPath: createPath(campfire);
-    } else {
-      rodada++;
-      return createPath(selected, path);
+      if (!inArea(nl, nc)) continue;
+      if (road.has(key(nl, nc))) continue;
+
+      const candidate = { l: nl, c: nc };
+      const touching = roadNeighborCount(nl, nc, road); // inclui sempre "current"
+
+      // Primeiro passo: a célula vizinha do start é o início legítimo do caminho.
+      if (len === 1) {
+        if (touching === 1) extensions.push(candidate);
+        continue;
+      }
+
+      if (isAdjacent(candidate, start)) {
+        // Só pode ser a célula de fechamento: deve tocar apenas "current" e "start".
+        if (touching === 2 && len + 1 >= MIN_LEN) closingCell = candidate;
+        continue;
+      }
+
+      // Passo normal: a nova célula só pode encostar em "current".
+      if (touching === 1) extensions.push(candidate);
     }
-  } else {
-    log(tilePath);
-    tilePath = [
-      [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1,-1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
-      [-1, 0, -2, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1],
-      [-1, 0, -1, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1],
-      [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1],
-      [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1],
-      [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1],
-      [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1],
-      [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1],
-      [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1],
-      [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1,-1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
-    ];
-    matrixPath = [];
-    rodada = 0;
-    console.log("tentativa: " + tentativas);
-    tentativas++;
-    return createPath(campfire);
-  }
-}
 
-//Este codigo ainda é impreciso, pode levar uma tentativa ou 100, o melhor seria seguir o caminho de desfazer os passos
+    // Fecha o loop (cedo se for sorteado, ou obrigatoriamente se não há mais saída).
+    if (closingCell && (extensions.length === 0 || Math.random() < closeProb)) {
+      path.push(closingCell);
+      return path.slice();
+    }
+
+    shuffle(extensions);
+    for (let i = 0; i < extensions.length; i++) {
+      const next = extensions[i];
+      const k = key(next.l, next.c);
+      path.push(next);
+      road.add(k);
+
+      const result = extend();
+      if (result) return result;
+
+      path.pop();
+      road.delete(k);
+    }
+
+    // Não conseguiu estender nem fechar aqui: tenta fechar como última opção.
+    if (closingCell) {
+      path.push(closingCell);
+      return path.slice();
+    }
+
+    return null;
+  }
+
+  return extend();
+}
 
 export function PathCreator() {
   return {
-    generate: function (current, max) {
-      var successoPath = createPath(campfire);
-
-      console.log(
-        "_______________________________________________________________"
-      );
-
-      log(tilePath);
-      console.log("erros antes do resultado: " + tentativas);
-      console.log(matrixPath);
-
-      return successoPath;
+    generate: function () {
+      for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+        const loop = tryBuildLoop();
+        if (loop && loop.length >= MIN_LEN) return loop;
+      }
+      // Fallback extremamente improvável: retângulo simples dentro da margem.
+      return fallbackRectangleLoop();
     },
   };
+}
+
+// Loop retangular garantido (só usado se o gerador aleatório falhar repetidamente).
+function fallbackRectangleLoop() {
+  const top = RMIN;
+  const bottom = RMAX;
+  const left = CMIN;
+  const right = CMAX;
+  const loop = [];
+
+  for (let c = left; c <= right; c++) loop.push({ l: top, c });
+  for (let l = top + 1; l <= bottom; l++) loop.push({ l, c: right });
+  for (let c = right - 1; c >= left; c--) loop.push({ l: bottom, c });
+  for (let l = bottom - 1; l > top; l--) loop.push({ l, c: left });
+
+  return loop;
 }

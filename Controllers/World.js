@@ -39,6 +39,9 @@ function move() {
   let coordinates = nextTileCoordinates();
   currentCoordinates = coordinates;
   hero.move(coordinates);
+
+  const regen = hero.getAttribute("lifeRegen");
+  if (regen > 0) hero.heal(regen);
   //TODO: for better results, this should be transormed into a promisse
   setTimeout(() => {
     if (coordinates.newLoop) {
@@ -69,6 +72,30 @@ function nextTileCoordinates() {
   return { row: coord[0], col: coord[1], newLoop: newLoop };
 }
 
+// Escolhe o tipo de mob a nascer, com tipos mais difíceis liberados conforme
+// o loop avança. Retorna a classe do mob (ainda não instanciada).
+function pickMobClass() {
+  let loop = controllers.Stats.Loop.curentLoop() || 0;
+  const M = controllers.Mobs;
+
+  const pool = [{ c: M.Slime, w: 50 }];
+  if (loop >= 1) {
+    pool.push({ c: M.Wolf, w: 20 });
+    pool.push({ c: M.ToxicSlime, w: 20 });
+  }
+  if (loop >= 2) pool.push({ c: M.FrostSlime, w: 15 });
+  if (loop >= 3) pool.push({ c: M.MagmaSlime, w: 15 });
+  if (loop >= 4) pool.push({ c: M.KingSlime, w: 4 });
+
+  const totalWeight = pool.reduce((sum, p) => sum + p.w, 0);
+  let roll = Math.random() * totalWeight;
+  for (let i = 0; i < pool.length; i++) {
+    roll -= pool[i].w;
+    if (roll <= 0) return pool[i].c;
+  }
+  return M.Slime;
+}
+
 function spawnMobs() {
   let _roadTiles = controllers.World.getRoadTiles();
 
@@ -77,11 +104,66 @@ function spawnMobs() {
     .forEach((tile) => {
       var chance = Math.random() * 100;
       if (chance < 10) {
-        let slime = new controllers.Mobs.Slime(tile);
-        slime.spawn();
-        tile.mobs.push(slime);
+        let MobClass = pickMobClass();
+        let mob = new MobClass(tile);
+        mob.spawn();
+        tile.mobs.push(mob);
       }
     });
+}
+
+function rollChance(percent) {
+  return Math.random() * 100 < percent;
+}
+
+// Número de ataques no round considerando a velocidade de ataque fracionária.
+function attacksThisRound(speed) {
+  let attacks = Math.floor(speed);
+  if (Math.random() < speed - attacks) attacks++;
+  return Math.max(1, attacks);
+}
+
+// Resolve a luta do herói contra todos os mobs presentes no tile.
+function resolveCombat(tile) {
+  const hero = window.globalEnv.hero;
+  const mobs = tile.mobs.slice(); // cópia: kill() altera tile.mobs
+
+  for (let m = 0; m < mobs.length; m++) {
+    const mob = mobs[m];
+    if (mob.dead) continue;
+
+    let safety = 0;
+    while (!mob.dead && safety++ < 1000) {
+      // Investida do herói (pode ter múltiplos golpes por velocidade de ataque).
+      const heroHits = attacksThisRound(hero.getAttribute("attackSpeed"));
+      let killed = false;
+      for (let h = 0; h < heroHits && !killed; h++) {
+        const crit = rollChance(hero.getAttribute("critChance"));
+        let dmg = hero.getAttribute("attack") * (crit ? 1.5 : 1) - mob.defense;
+        dmg = Math.max(1, Math.round(dmg));
+
+        const vamp = hero.getAttribute("vampirism");
+        if (vamp > 0) hero.heal((dmg * vamp) / 100);
+
+        killed = mob.takeDamage(dmg);
+      }
+
+      if (killed) {
+        mob.kill();
+        break;
+      }
+
+      // Contra-ataque do mob (esquiva do herói pode anular o golpe).
+      const mobHits = attacksThisRound(mob.attackSpeed);
+      let heroDied = false;
+      for (let h = 0; h < mobHits && !heroDied; h++) {
+        if (rollChance(hero.getAttribute("evasion"))) continue;
+        let dmg = mob.attack - hero.getAttribute("defense");
+        dmg = Math.max(1, Math.round(dmg));
+        heroDied = hero.takeDamage(dmg);
+      }
+    }
+  }
 }
 
 function checkForFight(callback) {
@@ -90,9 +172,7 @@ function checkForFight(callback) {
       tile.row == currentCoordinates.row && tile.col == currentCoordinates.col
   )[0];
   if (_currentTileObj.mobs.length) {
-    _currentTileObj.mobs.forEach(function (mob) {
-      mob.kill();
-    });
+    resolveCombat(_currentTileObj);
   }
   callback();
 }
